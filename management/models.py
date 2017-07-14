@@ -55,14 +55,6 @@ class Contact(models.Model):
 	telerivet_contact_id = models.CharField(max_length=50, blank=True)
 	trial_id = models.CharField(max_length=20, blank=True)
 	trial_group = models.CharField(max_length=20, blank=True)
-
-	def contact_id_default():
-		num_of_contacts = Contact.objects.all().count()
-		ten_billion = 10000000000
-		new_id = str(num_of_contacts + ten_billion)
-		return new_id
-
-	contact_id = models.CharField(max_length=20, unique=True, default=contact_id_default)
 	
 
 	def set_visit_dates(self):
@@ -82,7 +74,7 @@ class Contact(models.Model):
 		(GUJARATI, "Gujarati")
 		)
 
-	language_preference = models.CharField(max_length=4, choices=LANGUAGE_CHOICES,
+	language_preference = models.CharField(max_length=20, choices=LANGUAGE_CHOICES,
 		default=ENGLISH)
 
 	# Message References
