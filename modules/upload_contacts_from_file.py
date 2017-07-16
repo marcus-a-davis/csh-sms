@@ -6,24 +6,29 @@ def csv_upload(filepath):
 		reader = csv.DictReader(csvfile)
 		
 		for row in reader:
-			name = row["Name"]
-			phone_number = row["Phone Number"]
-			alt_phone_number = row["Alternative Phone"]
-			date_of_birth = row["Date of Birth"]
-			date_of_sign_up = row["Date of Sign Up"]
-			delay_in_days = row["Delay in days"]
-			functional_date_of_birth = row["Functional DoB"]
-			language_preference = row["Language Preference"]
-
-			# Format date to ensure right date format is entered
-
-			# Fix delay in days to fill blanks
-			if not delay_in_days:
-				delay_in_days = 0
+			new_dict = make_contact_dict(row)
 			
 			try:
-				new_contact = Contact.objects.get(name=name,phone_number=phone_number)
+				new_contact = Contact.objects.get(name=new_dict["name"],phone_number=new_dict["phone_number"])
 			except Contact.DoesNotExist:
-				new_contact = Contact.objects.get_or_create(name=name,phone_number=phone_number, 
-					alt_phone_number=alt_phone_number, delay_in_days = delay_in_days,
-					language_preference=language_preference)
+				new_contact = Contact.objects.get_or_create(**new_dict)
+
+def make_contact_dict(row):
+	new_dict = {}
+	new_dict["name"] = row["Name"]
+	new_dict["phone_number"] = row["Phone Number"]
+	new_dict["alt_phone_number"] = row["Alternative Phone"]
+	new_dict["delay_in_days"] = row["Delay in days"]
+	new_dict["language_preference"] = row["Language Preference"]
+	
+	# Dates to be handled to ensure right date format is entered, YYYY-MM-DD
+	# new_dict["date_of_birth"] = row["Date of Birth"]
+	# new_dict["date_of_sign_up"] = row["Date of Sign Up"]
+	# new_dict["functional_date_of_birth"] = row["Functional DoB"]
+
+
+	# Fix delay in days to fill blanks
+	if not new_dict["delay_in_days"]:
+		new_dict["delay_in_days"] = 0
+		
+	return new_dict
