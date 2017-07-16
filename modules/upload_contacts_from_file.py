@@ -1,5 +1,6 @@
 import csv
 import re
+from modules import utils, visit_date_helper
 from management.models import Contact
 
 def csv_upload(filepath):
@@ -19,13 +20,12 @@ def make_contact_dict(row):
 	new_dict["name"] = row["Name"]
 	new_dict["phone_number"] = row["Phone Number"]
 	new_dict["alt_phone_number"] = row["Alternative Phone"]
-	new_dict["delay_in_days"] = delay_num_fix(row["Delay in days"])
+	new_dict["delay_in_days"] = parse_or_create_delay_num(row["Delay in days"])
 	new_dict["language_preference"] = row["Language Preference"]
 	
-	# Dates to be handled to ensure right date format is entered, YYYY-MM-DD
-	# new_dict["date_of_birth"] = row["Date of Birth"]
-	# new_dict["date_of_sign_up"] = row["Date of Sign Up"]
-	# new_dict["functional_date_of_birth"] = row["Functional DoB"]
+	new_dict["date_of_birth"] = entered_date_string_to_date(row["Date of Birth"])
+	new_dict["date_of_sign_up"] = entered_date_string_to_date(row["Date of Sign Up"])
+	new_dict["functional_date_of_birth"] = parse_or_create_functional_dob(row["Functional DoB"], new_dict["date_of_birth"], new_dict["delay_in_days"])
 
 	# Personal Info
 	new_dict["gender"] = row["Gender"]
@@ -88,7 +88,7 @@ def monthly_income(row_entry):
 
 	return inc_val
 
-def delay_num_fix(row_entry):
+def parse_or_create_delay_num(row_entry):
 	if not row_entry:
 		delay = 0
 	elif re.search("\D+", row_entry):
@@ -97,3 +97,19 @@ def delay_num_fix(row_entry):
 		delay = int(row_entry)
 
 	return delay
+
+def entered_date_string_to_date(row_entry):
+	try:
+		ymd = utils.date_string_ymd_to_date(row_entry)
+		return ymd
+	except ValueError:
+		mdy = utils.date_string_mdy_to_date(row_entry)
+		return mdy
+
+def parse_or_create_functional_dob(row_entry, date_of_birth, delay):
+	if not row_entry:
+		func_dob = visit_date_helper.add_or_subtract_days(date_of_birth, delay)
+	else:
+		func_dob =  entered_date_string_to_date(row_entry)
+
+	return func_dob
