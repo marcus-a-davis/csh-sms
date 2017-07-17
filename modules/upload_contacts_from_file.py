@@ -61,9 +61,9 @@ def make_contact_dict(row):
 	new_dict["telerivet_sender_phone"] = row["Sender Phone"]
 
 	# DateTimes to be fixed
-	# new_dict["last_heard_from"] = row["Last Heard From"]
-	# new_dict["last_contacted"] = row["Last Contacted"]
-	# new_dict["telerivet_time_created"] = row["Time Created"]
+	new_dict["last_heard_from"] = parse_contact_time_references(row["Last Heard From"])
+	new_dict["last_contacted"] = parse_contact_time_references(row["Last Contacted"])
+	new_dict["time_created"] = parse_contact_time_references(row["Time Created"])
 
 	return new_dict
 
@@ -113,3 +113,9 @@ def parse_or_create_functional_dob(row_entry, date_of_birth, delay):
 		func_dob =  entered_date_string_to_date(row_entry)
 
 	return func_dob
+
+def parse_contact_time_references(row_entry):
+	if not row_entry:
+		return utils.get_current_time()
+	else:
+		return utils.datetime_string_mdy_to_datetime(row_entry)

@@ -81,10 +81,10 @@ class Contact(models.Model):
 	preferred_time = models.CharField(max_length=20, blank=True)
 	script_selection = models.CharField(max_length=20, blank=True)
 	telerivet_sender_phone = models.CharField(max_length=100, blank=True)
-	telerivet_time_created = models.DateField(auto_now=False, auto_now_add=False,
-		default=datetime.date.today)
-	last_heard_from = models.DateTimeField(auto_now=False, auto_now_add=False, default=timezone.now)
-	last_contacted = models.DateTimeField(auto_now=False, auto_now_add=False,default=timezone.now)
+	time_created = models.DateTimeField(auto_now=False, auto_now_add=False,
+		default=datetime.datetime.now)
+	last_heard_from = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True)
+	last_contacted = models.DateTimeField(auto_now=False, auto_now_add=False,blank=True)
 
 	def __str__(self):
 		return self.name

@@ -21,4 +21,7 @@ def date_string_mdy_to_date(date_string):
 	return datetime.strptime(date_string.strip(), "%m-%d-%Y").date()
 
 def datetime_string_mdy_to_datetime(date_string):
-	return datetime.strptime(date_string.strip(), "%m/%d/%Y %I:%M:%S %p")	
+	return datetime.strptime(date_string.strip(), "%m/%d/%Y %I:%M:%S %p")
+
+def get_current_time():
+	return datetime.now()
