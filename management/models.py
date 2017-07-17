@@ -55,14 +55,6 @@ class Contact(models.Model):
 	telerivet_contact_id = models.CharField(max_length=50, blank=True)
 	trial_id = models.CharField(max_length=20, blank=True)
 	trial_group = models.CharField(max_length=20, blank=True)
-
-	def contact_id_default():
-		num_of_contacts = Contact.objects.all().count()
-		ten_billion = 10000000000
-		new_id = str(num_of_contacts + ten_billion)
-		return new_id
-
-	contact_id = models.CharField(max_length=20, unique=True, default=contact_id_default)
 	
 
 	def set_visit_dates(self):
@@ -82,17 +74,17 @@ class Contact(models.Model):
 		(GUJARATI, "Gujarati")
 		)
 
-	language_preference = models.CharField(max_length=4, choices=LANGUAGE_CHOICES,
+	language_preference = models.CharField(max_length=20, choices=LANGUAGE_CHOICES,
 		default=ENGLISH)
 
 	# Message References
 	preferred_time = models.CharField(max_length=20, blank=True)
 	script_selection = models.CharField(max_length=20, blank=True)
 	telerivet_sender_phone = models.CharField(max_length=100, blank=True)
-	telerivet_time_created = models.DateField(auto_now=False, auto_now_add=False,
-		default=datetime.date.today)
-	last_heard_from = models.DateTimeField(auto_now=False, auto_now_add=False, default=timezone.now)
-	last_contacted = models.DateTimeField(auto_now=False, auto_now_add=False,default=timezone.now)
+	time_created = models.DateTimeField(auto_now=False, auto_now_add=False,
+		default=datetime.datetime.now)
+	last_heard_from = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True)
+	last_contacted = models.DateTimeField(auto_now=False, auto_now_add=False,blank=True)
 
 	def __str__(self):
 		return self.name
